@@ -17,11 +17,11 @@ killSubproc() {
 }
 
 runPythonServerWithEnvFile() {
-	env `cat .env | grep -v ^# | xargs` $server_cmd
+	env `cat .env | grep -v ^# | xargs` $server_cmd &
 }
 
 runPythonServerBackground() {
-	runPythonServerWithEnvFile &
+	runPythonServerWithEnvFile
 	server_pid=$!
 	sleep 1.5
 	if [ -z "`ps $server_pid | sed 1d`" ]; then
@@ -47,7 +47,7 @@ runWebpack() {
 }
 
 echoMD5() {
-	echo `ls -lR . | grep -E \.py$ | md5sum`
+	echo `ls -lR . | grep -E \.py$ | md5`
 }
 
 monitorModify() {
