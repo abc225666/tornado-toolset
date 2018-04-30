@@ -1,4 +1,0 @@
-tornado
-pymongo
-
-./tornado-toolset

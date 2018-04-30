@@ -20,76 +20,6 @@ installHooks() {
 }
 
 
-installTool() {
-    echo "---- Installing tools ----"
-    if ! [ -e ./tool ]; then
-        ln -s -f `dirname $0`/tool ./tool
-    else
-        echo "./tool folder already exist."
-    fi
-    echo "---- Installed tools ----"
-}
-
-copyDefaultFile() {
-    local SOURCE_DIR=`dirname $0`/default
-    local SOURCE_FILE="${SOURCE_DIR}/$1"
-    if [ -n "$2" ]; then
-        SOURCE_FILE="${SOURCE_DIR}/$2"
-    fi
-    if [ -f "$1" ]; then
-        echo "$1" already exist.
-    else
-        cp "${SOURCE_FILE}" "$1"
-    fi
-}
-
-installBackend() {
-    echo "---- Installing backend ----"
-    mkdir -p backend
-    mkdir -p backend/db
-    touch backend/db/__init__.py
-    mkdir -p backend/handler
-    touch backend/handler/__init__.py
-    mkdir -p backend/template
-    mkdir -p backend/test
-    touch backend/test/__init__.py
-    mkdir -p backend/test/db
-    touch backend/test/db/__init__.py
-    mkdir -p backend/test/handler
-    touch backend/test/handler/__init__.py
-
-    copyDefaultFile 'backend/app.py'
-    copyDefaultFile 'backend/handler/route.py'
-    copyDefaultFile 'backend/test/__main__.py'
-    copyDefaultFile 'backend/test/db/base.py'
-    copyDefaultFile 'backend/test/handler/base.py'
-    copyDefaultFile 'requirement.txt'
-    copyDefaultFile 'dev-requirement.txt'
-    copyDefaultFile '.gitignore' 'fullend-gitignore'
-    copyDefaultFile '.env.example'
-    copyDefaultFile '.style.yapf'
-    echo "---- Installed backend ----"
-}
-
-installFrontend() {
-    echo "---- Installing frontend ----"
-    mkdir -p frontend
-    mkdir -p frontend/components
-    mkdir -p frontend/routes
-    mkdir -p frontend/store
-    mkdir -p frontend/utils
-    mkdir -p public/bundle
-
-    copyDefaultFile 'frontend/main.jsx'
-    copyDefaultFile 'frontend/utils/ajax.jsx'
-    copyDefaultFile 'package.json'
-    copyDefaultFile 'webpack.config.js'
-    copyDefaultFile '.prettierrc'
-    copyDefaultFile 'public/bundle/.gitignore' 'ignoreall-gitignore'
-    echo "---- Installed frontend ----"
-}
-
-
 read -p "Setup tornado project at $(pwd) ?[y/N]" yn
 if [ "$yn" != 'y' ] && [ "$yn" != 'Y' ]; then
     echo "quit."
@@ -97,13 +27,5 @@ if [ "$yn" != 'y' ] && [ "$yn" != 'Y' ]; then
 fi
 
 installHooks || exit 1
-installTool || exit 1
-installBackend || exit 1
 
-read -p "Setup frontend ?[y/N]" yn
-if [ "$yn" == 'y' ] || [ "$yn" == 'Y' ]; then
-    installFrontend || exit 1
-else
-    echo "Skipping frontend..."
-fi
 echo "success."
