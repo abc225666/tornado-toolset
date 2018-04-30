@@ -19,6 +19,17 @@ installHooks() {
     echo "---- Installed githooks ----"
 }
 
+installTool() {
+    echo "---- Installing tools ----"
+    if ! [ -e ./tool ]; then
+        ln -s -f `dirname $0`/tool ./tool
+    else
+        echo "./tool folder already exist."
+    fi
+    echo "---- Installed tools ----"
+}
+
+
 
 read -p "Setup tornado project at $(pwd) ?[y/N]" yn
 if [ "$yn" != 'y' ] && [ "$yn" != 'Y' ]; then
@@ -27,5 +38,6 @@ if [ "$yn" != 'y' ] && [ "$yn" != 'Y' ]; then
 fi
 
 installHooks || exit 1
+installTool || exit 1
 
 echo "success."
