@@ -6,11 +6,13 @@
 cd `dirname $0`'/..'
 source tool/load-env
 current_pid=$$
+celery_data_dir='celery_data'
+echo ${celery_data_dir}
 
-celery_cmd="celery -A celeryworker.celery worker -l INFO -B -Q ${CELERY_QUEUE}"
+celery_cmd="celery -A celeryworker.celery worker -l INFO -B -Q ${CELERY_QUEUE} --pidfile ${celery_data_dir}/celeryd.pid -f ${celery_data_dir}/celery.log"
 
 killSubproc() {
-    test $celery_pid -ne 0 && kill -QUIT $celery_pid
+    test -f ${celery_data_dir}/celeryd.pid && kill `cat ${celery_data_dir}/celeryd.pid`
 	exit 1
 }
 
@@ -43,7 +45,8 @@ monitorModify() {
         echo ""
         echo "--------------- reload celery ---------------"
         echo ""
-        test $celery_pid -ne 0 && kill -QUIT $celery_pid
+        test -f ${celery_data_dir}/celeryd.pid && kill -QUIT `cat ${celery_data_dir}/celeryd.pid`
+        sleep 2
         runCeleryBackground
         old_celery_MD5=`echoCeleryMD5`
     fi
